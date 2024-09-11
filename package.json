@@ -1,5 +1,5 @@
 {
-  "name": "crudapp",
+  "name": "simple-crud-ops",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,10 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "mongodb": "^6.8.1",
-    "next": "13.5.6",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "next": "13.5.6"
   },
   "devDependencies": {
     "eslint": "^8",

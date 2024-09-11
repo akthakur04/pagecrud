@@ -1,24 +1,21 @@
-// pages/index.js
+'use client';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [items, setItems] = useState([]);
   function fetchData() {
-    fetch('/api/items').then((response) => {
-      return response.json();
-    }).then((data) => { setItems(data) });
+    fetch('/api/todo').then(response => response.json()).then((data) => { setItems(data) });
   }
-
   useEffect(() => {
     fetchData();
   }, []);
-console.log(items)
+  console.log(items)
   return (
     <div>
       <h1>Tasks</h1>
       <ul>
-        {items.map((item) => (
-          <li key={item._id}>{item.task}</li>
+        {items && items?.map((item) => (
+          <li key={item._id}>{item.title} -  {item.description}</li>  
         ))}
       </ul>
     </div>
