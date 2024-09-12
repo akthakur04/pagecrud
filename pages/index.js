@@ -1,45 +1,79 @@
 // pages/index.js
-import { Button, Container, Typography, Box } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Button, Container, Typography, Box } from '@mui/material';
 
 export default function Home() {
   const router = useRouter();
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  const handleCreateTask = () => {
-    router.push('/create'); // Redirect to /create page
-  };
+  useEffect(() => {
+    async function checkLoginStatus() {
+      const response = await fetch('/api/me');
+      const data = await response.json();
+      setLoggedIn(data.loggedIn);
+    }
 
-  const handleViewTasks = () => {
-    router.push('/tasks'); // Redirect to /tasks page
+    checkLoginStatus();
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/logout');
+    setLoggedIn(false);
   };
 
   return (
     <Container>
       <Box textAlign="center" mt={5}>
-        <Typography variant="h4" gutterBottom>
-          Task Manager
+        <Typography variant="h3" gutterBottom>
+          Welcome to Task Manager
         </Typography>
 
-        <Box mt={2}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={handleCreateTask} // Redirects to create task page
-            style={{ marginRight: '20px' }}
-          >
-            Create Task
-          </Button>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            onClick={handleViewTasks}
-          >
-            View All Tasks
-          </Button>
-        </Box>
+        {!loggedIn ? (
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => router.push('/login')}
+              style={{ marginRight: '10px' }}
+            >
+              Login
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => router.push('/register')}
+            >
+              Register
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => router.push('/tasks')}
+              style={{ marginRight: '10px' }}
+            >
+              View Tasks
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => router.push('/create')}
+            >
+              Create Task
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleLogout}
+              style={{ marginLeft: '10px' }}
+            >
+              Logout
+            </Button>
+          </>
+        )}
       </Box>
     </Container>
   );
