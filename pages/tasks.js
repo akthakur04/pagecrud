@@ -1,17 +1,27 @@
 // pages/tasks.js
 import { useEffect, useState } from 'react';
-import { Container, List, ListItem, ListItemText, Typography, Box, Button } from '@mui/material';
+import { Container, List, ListItem, ListItemText, Typography, Box, Button, CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const router = useRouter();
 
   useEffect(() => {
     async function fetchTasks() {
-      const response = await fetch('/api/items');
-      const data = await response.json();
-      setTasks(data);
+      try {
+        const response = await fetch('/api/items');
+        if (!response.ok) {
+          throw new Error('Failed to fetch tasks');
+        }
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched or error occurs
+      }
     }
 
     fetchTasks();
@@ -43,37 +53,43 @@ export default function Tasks() {
         </Typography>
       </Box>
 
-      <List>
-        {tasks.length === 0 ? (
-          <Typography>No tasks available.</Typography>
-        ) : (
-          tasks.map((task) => (
-            <ListItem key={task._id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <ListItemText
-                primary={task.title}
-                secondary={task.description ? task.description : 'No description'}
-              />
-              <Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleEdit(task._id)}
-                  style={{ marginRight: '10px' }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleDelete(task._id)}
-                >
-                  Delete
-                </Button>
-              </Box>
-            </ListItem>
-          ))
-        )}
-      </List>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <List>
+          {tasks.length === 0 ? (
+            <Typography>No tasks available.</Typography>
+          ) : (
+            tasks.map((task) => (
+              <ListItem key={task._id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <ListItemText
+                  primary={task.title}
+                  secondary={task.description ? task.description : 'No description'}
+                />
+                <Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEdit(task._id)}
+                    style={{ marginRight: '10px' }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDelete(task._id)}
+                  >
+                    Delete
+                  </Button>
+                </Box>
+              </ListItem>
+            ))
+          )}
+        </List>
+      )}
     </Container>
   );
 }
