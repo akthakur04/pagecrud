@@ -1,5 +1,5 @@
 // pages/api/items/[id].js
-import clientPromise from '@/lib/mongodb';
+import clientPromise from '../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 export default async function handler(req, res) {
@@ -12,12 +12,15 @@ export default async function handler(req, res) {
       const task = await db.collection('tasks').findOne({ _id: new ObjectId(id) });
 
       if (task) {
-        res.status(200).json(task);
+        res.status(200).json({
+          title: task.title,          // Use title instead of task
+          description: task.description,
+        });
       } else {
         res.status(404).json({ error: 'Task not found' });
       }
     } catch (e) {
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: `Internal Server Error - ${e}` });
     }
   } else {
     res.setHeader('Allow', ['GET']);

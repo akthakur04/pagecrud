@@ -1,5 +1,5 @@
 // pages/api/updateTask/[id].js
-import clientPromise from '@/lib/mongodb';
+import clientPromise from '../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 export default async function handler(req, res) {
@@ -8,15 +8,15 @@ export default async function handler(req, res) {
       const client = await clientPromise;
       const db = client.db('myapp');
       const { id } = req.query;
-      const { task, description } = req.body;
+      const { title, description } = req.body; // Use title and description
 
       // Update the task in the collection
       const result = await db.collection('tasks').updateOne(
         { _id: new ObjectId(id) },
         {
           $set: {
-            task,
-            description,
+            title,        // Update the title field
+            description,  // Update the description field
           },
         }
       );

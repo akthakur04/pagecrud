@@ -6,7 +6,7 @@ import { Container, TextField, Button, Typography, Box } from '@mui/material';
 export default function UpdateTask() {
   const router = useRouter();
   const { id } = router.query;
-  const [task, setTask] = useState('');
+  const [title, setTitle] = useState(''); // Change task to title
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +16,7 @@ export default function UpdateTask() {
       async function fetchTask() {
         const response = await fetch(`/api/items/${id}`);
         const data = await response.json();
-        setTask(data.task);
+        setTitle(data.title); // Update to use 'title'
         setDescription(data.description);
         setLoading(false);
       }
@@ -28,14 +28,14 @@ export default function UpdateTask() {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    const updatedTask = { task, description };
+    const updatedTask = { title, description }; // Send title and description
 
     const response = await fetch(`/api/updateTask/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedTask),
+      body: JSON.stringify(updatedTask), // Update the body to send title and description
     });
 
     if (response.ok) {
@@ -57,8 +57,8 @@ export default function UpdateTask() {
       <form onSubmit={handleUpdate}>
         <TextField
           label="Task Title"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
+          value={title} // Update to use title
+          onChange={(e) => setTitle(e.target.value)} // Update setter
           fullWidth
           margin="normal"
           required
