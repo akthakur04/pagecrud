@@ -1,9 +1,11 @@
 // pages/tasks.js
 import { useEffect, useState } from 'react';
 import { Container, List, ListItem, ListItemText, Typography, Box, Button } from '@mui/material';
+import { useRouter } from 'next/router';
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchTasks() {
@@ -22,12 +24,15 @@ export default function Tasks() {
       });
 
       if (response.ok) {
-        // Filter out the deleted task from the state
         setTasks(tasks.filter((task) => task._id !== taskId));
       } else {
         alert('Failed to delete task');
       }
     }
+  };
+
+  const handleEdit = (taskId) => {
+    router.push(`/update/${taskId}`);
   };
 
   return (
@@ -48,13 +53,23 @@ export default function Tasks() {
                 primary={task.title}
                 secondary={task.description ? task.description : 'No description'}
               />
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => handleDelete(task._id)}
-              >
-                Delete
-              </Button>
+              <Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleEdit(task._id)}
+                  style={{ marginRight: '10px' }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleDelete(task._id)}
+                >
+                  Delete
+                </Button>
+              </Box>
             </ListItem>
           ))
         )}
