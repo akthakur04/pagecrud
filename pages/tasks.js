@@ -32,7 +32,7 @@ export default function Tasks() {
   };
 
   const handleEdit = (taskId) => {
-    router.push(`/update/${taskId}`);
+    router.push(`/api/update/${taskId}`);
   };
 
   return (
