@@ -5,6 +5,10 @@ import { useRouter } from 'next/router';
 export default function Home() {
   const router = useRouter();
 
+  const handleCreateTask = () => {
+    router.push('/create'); // Redirect to /create page
+  };
+
   const handleViewTasks = () => {
     router.push('/tasks'); // Redirect to /tasks page
   };
@@ -21,7 +25,7 @@ export default function Home() {
             variant="contained"
             color="primary"
             size="large"
-            onClick={() => alert('Create Task functionality coming soon!')}
+            onClick={handleCreateTask} // Redirects to create task page
             style={{ marginRight: '20px' }}
           >
             Create Task
