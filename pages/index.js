@@ -1,27 +1,42 @@
 // pages/index.js
-import { useEffect, useState } from 'react';
+import { Button, Container, Typography, Box } from '@mui/material';
+import { useRouter } from 'next/router';
 
 export default function Home() {
-  const [items, setItems] = useState([]);
+  const router = useRouter();
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch('/api/items');
-      const data = await response.json();
-      setItems(data);
-    }
-
-    fetchData();
-  }, []);
+  const handleViewTasks = () => {
+    router.push('/tasks'); // Redirect to /tasks page
+  };
 
   return (
-    <div>
-      <h1>Tasks</h1>
-      <ul>
-        {items.map((item) => (
-          <li key={item._id}>{item.title} - {item?.description}</li>
-        ))}
-      </ul>
-    </div>
+    <Container>
+      <Box textAlign="center" mt={5}>
+        <Typography variant="h4" gutterBottom>
+          Task Manager
+        </Typography>
+
+        <Box mt={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={() => alert('Create Task functionality coming soon!')}
+            style={{ marginRight: '20px' }}
+          >
+            Create Task
+          </Button>
+
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            onClick={handleViewTasks}
+          >
+            View All Tasks
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 }
