@@ -1,6 +1,6 @@
 // pages/tasks.js
 import { useEffect, useState } from 'react';
-import { Container, List, ListItem, ListItemText, Typography, Box } from '@mui/material';
+import { Container, List, ListItem, ListItemText, Typography, Box, Button } from '@mui/material';
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -15,6 +15,21 @@ export default function Tasks() {
     fetchTasks();
   }, []);
 
+  const handleDelete = async (taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      const response = await fetch(`/api/deleteTask/${taskId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Filter out the deleted task from the state
+        setTasks(tasks.filter((task) => task._id !== taskId));
+      } else {
+        alert('Failed to delete task');
+      }
+    }
+  };
+
   return (
     <Container>
       <Box textAlign="center" mt={5}>
@@ -28,9 +43,18 @@ export default function Tasks() {
           <Typography>No tasks available.</Typography>
         ) : (
           tasks.map((task) => (
-            <ListItem key={task._id}>
-              <ListItemText primary={task.title} />
-              <ListItemText primary={task.description} />
+            <ListItem key={task._id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <ListItemText
+                primary={task.title}
+                secondary={task.description ? task.description : 'No description'}
+              />
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleDelete(task._id)}
+              >
+                Delete
+              </Button>
             </ListItem>
           ))
         )}
